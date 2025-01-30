@@ -1,0 +1,28 @@
+version: '3.9'
+services:
+  php-apache:
+    image: php:7.4-apache
+    container_name: php-apache
+    ports:
+      - "8080:80"
+    volumes:
+      - ./index.php:/var/www/html/index.php
+    environment:
+      - DB_HOST=postgres
+      - DB_NAME=biblioteca_db
+      - DB_USER=biblioteca_user
+      - DB_PASSWORD=user_pass
+    command: bash -c "apt-get update && apt-get install -y libpq-dev && docker-php-ext-install pdo pdo_pgsql && apache2-foreground"
+
+  postgres:
+    image: postgres:13
+    container_name: postgres-db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: biblioteca_db
+      POSTGRES_USER: biblioteca_user
+      POSTGRES_PASSWORD: user_pass
+
+volumes:
+  db_data:
